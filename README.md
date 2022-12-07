@@ -5,9 +5,9 @@ o	IP / PORT
 o	Numéro de table
 -	Si connexion réussie :
 o	Affichage d’un nouveau GUI avec 3 boutons :
-	Question -> Demande pour une question
-	Validation -> Demande pour une validation
-	Annulation -> Annule la demande
+  Question -> Demande pour une question
+  Validation -> Demande pour une validation
+  Annulation -> Annule la demande
 Remarque : Le serveur envoie une réponse lors de la connexion et lors d’un clic sur un bouton afin de mettre à jour l’état des boutons.
 Etat des boutons : 
 Par défaut aucun bouton n’est sélectionné,
