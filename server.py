@@ -1,5 +1,7 @@
 import socket
 import threading
+#import de la classe DatabaseConnection du fichier bdd.py
+from bdd import DatabaseConnection
 
 #fonction qui affiche les threads de la liste threads et les sépare par des virgules
 def print_threads():
@@ -46,6 +48,10 @@ class ClientThread(threading.Thread):
             if r.decode() == "/leave":
                 print("Connexion terminée")
                 self.clientsocket.close()
+                # supprime le numéro d'identification du client de la liste des threads
+                threads.remove(self.idClient)
+                # affiche la liste des threads
+                print_threads()
                 break
 
 tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -56,6 +62,19 @@ tcpsock.bind(("", 1111))
 threads = []
 
 while True:
+    # Créer une instance de la classe DatabaseConnection
+    db = DatabaseConnection("localhost", 3306, "cmm", "root", "")
+
+    # Établir la connexion à la base de données
+    db.connect()
+
+    # Appeler la méthode detect_game
+    results = db.detect_game()
+
+    # Afficher les résultats
+    if results[0][0] is not None:
+        print("Session n°"+ str(results[0][0]))
+
     tcpsock.listen(10)
     print("En écoute...")
     (clientsocket, (ip, port)) = tcpsock.accept()
