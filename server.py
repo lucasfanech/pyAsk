@@ -11,7 +11,7 @@ def print_threads():
     print()
 
 #fonction check_demande qui vérifie si une demande est présente dans la table waiting_line
-def check_demand(userid, sessionId):
+def check_demand(client, sessionId):
     # Créer une instance de la classe DatabaseConnection
     db = DatabaseConnection("localhost", 3306, "cmm", "root", "")
 
@@ -19,14 +19,29 @@ def check_demand(userid, sessionId):
     db.connect()
 
     # Vérifie si une demande est présente dans la table waiting_line
-    demand = db.show_wait(userid, sessionId)
-    print("demande: " + str(demand))
+    demand = db.show_wait(client.idClient, sessionId)
     # fermes la connexion à la base de données
     db.disconnect()
     # Si une demande est présente, on retourne True
-    if demand:
-        return True
-    # TO DO: Return de l'etat de la demande au lieu de true
+    if demand != None:
+        if len(demand) > 0:
+            # get the superclass of userid
+            if (demand[0][4] == 0):
+                client.state = "question pending"
+            elif (demand[0][4] == 1):
+                client.state = "verify pending"
+            else:
+                client.state = "error"
+            print("client.state: " + client.state)
+            return True
+        else:
+            client.state = "free"
+            print("client.state: " + client.state)
+            return False
+    else:
+        client.state = "free"
+        print("client.state: " + client.state)
+        return False
 
 
 class ClientThread(threading.Thread):
@@ -51,13 +66,15 @@ class ClientThread(threading.Thread):
 
         self.clientsocket.send("Vous êtes connecté".encode())
         # check_demand()
-        r_demand = check_demand(self.idClient, num_session)
-        self.state = r_demand
+        r_demand = check_demand(self, num_session)
 
         # écoute les messages du client et les affiche
         while True:
             r = self.clientsocket.recv(2048)
             print("Client "+self.idClient+" :", r.decode())
+            # check_demand()
+            r_demand = check_demand(self, num_session)
+
             # Si la réponse est "/call" alors on affiche "Appel en cours"
             if r.decode() == "/ask":
                 print("Appel pour une question")
@@ -65,8 +82,6 @@ class ClientThread(threading.Thread):
                 print("Appel pour une vérification")
             if r.decode() == "/cancel":
                 print("Annule l'appel")
-
-
             if r.decode() == "/leave":
                 print("Connexion terminée")
                 self.clientsocket.close()
