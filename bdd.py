@@ -37,3 +37,20 @@ class DatabaseConnection:
         self.cursor.execute("SELECT * FROM `waiting_line` where user_id = %s and session_id = %s and processing = 0", (userid, sessionId))
         rows = self.cursor.fetchall()
         return rows
+
+    def cancel(self, userid, sessionId):
+        self.cursor.execute("UPDATE `waiting_line` SET processing = 1 WHERE user_id = %s and session_id = %s", (userid, sessionId))
+        self.cnx.commit()
+        return True
+
+    def ask(self, userid, sessionId):
+        # exemple: INSERT INTO `waiting_line` (`id_waiting`, `session_id`, `user_id`, `waiting_time`, `call_type`, `processing`, `rate`, `solved_date`, `comment`) VALUES (NULL, '4', '11', CURRENT_TIMESTAMP, '0', '0', NULL, NULL, NULL);
+        self.cursor.execute("INSERT INTO `waiting_line` (`id_waiting`, `session_id`, `user_id`, `waiting_time`, `call_type`, `processing`, `rate`, `solved_date`, `comment`) VALUES (NULL, %s, %s, CURRENT_TIMESTAMP, '0', '0', NULL, NULL, NULL)", (sessionId, userid))
+        self.cnx.commit()
+        return True
+
+    def verify(self, userid, sessionId):
+        # exemple: INSERT INTO `waiting_line` (`id_waiting`, `session_id`, `user_id`, `waiting_time`, `call_type`, `processing`, `rate`, `solved_date`, `comment`) VALUES (NULL, '4', '11', CURRENT_TIMESTAMP, '1', '0', NULL, NULL, NULL);
+        self.cursor.execute("INSERT INTO `waiting_line` (`id_waiting`, `session_id`, `user_id`, `waiting_time`, `call_type`, `processing`, `rate`, `solved_date`, `comment`) VALUES (NULL, %s, %s, CURRENT_TIMESTAMP, '1', '0', NULL, NULL, NULL)", (sessionId, userid))
+        self.cnx.commit()
+        return True

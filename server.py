@@ -48,6 +48,7 @@ class ClientThread(threading.Thread):
 
     def __init__(self, ip, port, clientsocket):
         threading.Thread.__init__(self)
+        self.state = None
         self.ip = ip
         self.port = port
         self.clientsocket = clientsocket
@@ -78,11 +79,29 @@ class ClientThread(threading.Thread):
             # Si la réponse est "/call" alors on affiche "Appel en cours"
             if r.decode() == "/ask":
                 print("Appel pour une question")
-            if r.decode() == "/verify":
+                if self.state == "free":
+                    self.clientsocket.send("Question envoyée".encode())
+                    db.ask(self.idClient, num_session)
+                else:
+                    self.clientsocket.send("ERREUR: Vous avez déjà une demande en cours".encode())
+            elif r.decode() == "/verify":
                 print("Appel pour une vérification")
-            if r.decode() == "/cancel":
+                if self.state == "free":
+                    self.clientsocket.send("Vérification envoyée".encode())
+                    db.verify(self.idClient, num_session)
+                else:
+                    self.clientsocket.send("ERREUR: Vous avez déjà une demande en cours".encode())
+            elif r.decode() == "/cancel":
                 print("Annule l'appel")
-            if r.decode() == "/leave":
+                if self.state == "question pending":
+                    self.clientsocket.send("Question annulée".encode())
+                    db.cancel(self.idClient, num_session)
+                elif self.state == "verify pending":
+                    self.clientsocket.send("Vérification annulée".encode())
+                    db.cancel(self.idClient, num_session)
+                else:
+                    self.clientsocket.send("ERREUR: Vous n'avez pas de demande en cours".encode())
+            elif r.decode() == "/leave":
                 print("Connexion terminée")
                 self.clientsocket.close()
                 # supprime le numéro d'identification du client de la liste des threads
@@ -90,6 +109,9 @@ class ClientThread(threading.Thread):
                 # affiche la liste des threads
                 print_threads()
                 break
+            else:
+                self.clientsocket.send("ERREUR: Commande inconnue".encode())
+
 
 tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
