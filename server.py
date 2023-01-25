@@ -1,5 +1,7 @@
 import socket
 import threading
+#import de la classe DatabaseConnection du fichier bdd.py
+from bdd import DatabaseConnection
 
 #fonction qui affiche les threads de la liste threads et les sépare par des virgules
 def print_threads():
@@ -8,11 +10,45 @@ def print_threads():
         print(thread, end=", ")
     print()
 
+#fonction check_demande qui vérifie si une demande est présente dans la table waiting_line
+def check_demand(client, sessionId):
+    # Créer une instance de la classe DatabaseConnection
+    db = DatabaseConnection("localhost", 3306, "cmm", "root", "")
+
+    # Établir la connexion à la base de données
+    db.connect()
+
+    # Vérifie si une demande est présente dans la table waiting_line
+    demand = db.show_wait(client.idClient, sessionId)
+    # fermes la connexion à la base de données
+    db.disconnect()
+    # Si une demande est présente, on retourne True
+    if demand != None:
+        if len(demand) > 0:
+            # get the superclass of userid
+            if (demand[0][4] == 0):
+                client.state = "question pending"
+            elif (demand[0][4] == 1):
+                client.state = "verify pending"
+            else:
+                client.state = "error"
+            print("client.state: " + client.state)
+            return True
+        else:
+            client.state = "free"
+            print("client.state: " + client.state)
+            return False
+    else:
+        client.state = "free"
+        print("client.state: " + client.state)
+        return False
+
 
 class ClientThread(threading.Thread):
 
     def __init__(self, ip, port, clientsocket):
         threading.Thread.__init__(self)
+        self.state = None
         self.ip = ip
         self.port = port
         self.clientsocket = clientsocket
@@ -30,23 +66,52 @@ class ClientThread(threading.Thread):
         print_threads()
 
         self.clientsocket.send("Vous êtes connecté".encode())
+        # check_demand()
+        r_demand = check_demand(self, num_session)
+
         # écoute les messages du client et les affiche
         while True:
             r = self.clientsocket.recv(2048)
             print("Client "+self.idClient+" :", r.decode())
+            # check_demand()
+            r_demand = check_demand(self, num_session)
+
             # Si la réponse est "/call" alors on affiche "Appel en cours"
             if r.decode() == "/ask":
                 print("Appel pour une question")
-            if r.decode() == "/verify":
+                if self.state == "free":
+                    self.clientsocket.send("Question envoyée".encode())
+                    db.ask(self.idClient, num_session)
+                else:
+                    self.clientsocket.send("ERREUR: Vous avez déjà une demande en cours".encode())
+            elif r.decode() == "/verify":
                 print("Appel pour une vérification")
-            if r.decode() == "/cancel":
+                if self.state == "free":
+                    self.clientsocket.send("Vérification envoyée".encode())
+                    db.verify(self.idClient, num_session)
+                else:
+                    self.clientsocket.send("ERREUR: Vous avez déjà une demande en cours".encode())
+            elif r.decode() == "/cancel":
                 print("Annule l'appel")
-
-
-            if r.decode() == "/leave":
+                if self.state == "question pending":
+                    self.clientsocket.send("Question annulée".encode())
+                    db.cancel(self.idClient, num_session)
+                elif self.state == "verify pending":
+                    self.clientsocket.send("Vérification annulée".encode())
+                    db.cancel(self.idClient, num_session)
+                else:
+                    self.clientsocket.send("ERREUR: Vous n'avez pas de demande en cours".encode())
+            elif r.decode() == "/leave":
                 print("Connexion terminée")
                 self.clientsocket.close()
+                # supprime le numéro d'identification du client de la liste des threads
+                threads.remove(self.idClient)
+                # affiche la liste des threads
+                print_threads()
                 break
+            else:
+                self.clientsocket.send("ERREUR: Commande inconnue".encode())
+
 
 tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -56,6 +121,20 @@ tcpsock.bind(("", 1111))
 threads = []
 
 while True:
+    # Créer une instance de la classe DatabaseConnection
+    db = DatabaseConnection("localhost", 3306, "cmm", "root", "")
+
+    # Établir la connexion à la base de données
+    db.connect()
+
+    # Appeler la méthode detect_game
+    results = db.detect_game()
+
+    # Afficher les résultats
+    if results[0][0] is not None:
+        print("Session n°"+ str(results[0][0]))
+        num_session = results[0][0]
+
     tcpsock.listen(10)
     print("En écoute...")
     (clientsocket, (ip, port)) = tcpsock.accept()

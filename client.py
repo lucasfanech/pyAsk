@@ -21,6 +21,9 @@ if response == "Vous êtes connecté":
         # envoie l'entrée utilisateur au serveur
         print("Envoi de l'entrée utilisateur au serveur...")
         clientsocket.send(userInput.encode())
+        # affiche la réponse du serveur
+        response = clientsocket.recv(2048).decode()
+        print("Réponse du serveur: ", response)
         # Si la réponse est "/server-stop" alors on affiche "Connexion terminée" et on ferme la connexion
         if userInput == "/leave":
             print("Connexion terminée")
