@@ -5,16 +5,30 @@ import runpy
 def send_ask_command():
     # Envoie la commande "/ask" au serveur en utilisant un socket
     clientsocket.send("/ask".encode())
-    # ecoute la réponse du serveur
+    # affiche la réponse du serveur
+    response = clientsocket.recv(2048).decode()
+    print("Réponse du serveur: ", response)
+    T.delete(1.0, END)
+    T.insert(END, response)
 
 
 def send_verify_command():
     # Envoie la commande "/verify" au serveur en utilisant un socket
     clientsocket.send("/verify".encode())
+    # affiche la réponse du serveur
+    response = clientsocket.recv(2048).decode()
+    print("Réponse du serveur: ", response)
+    T.delete(1.0, END)
+    T.insert(END, response)
 
 def send_cancel_command():
     # Envoie la commande "/cancel" au serveur en utilisant un socket
     clientsocket.send("/cancel".encode())
+    # affiche la réponse du serveur
+    response = clientsocket.recv(2048).decode()
+    print("Réponse du serveur: ", response)
+    T.delete(1.0, END)
+    T.insert(END, response)
 
 def send_leave_command():
     # Envoie la commande "/leave" au serveur en utilisant un socket
@@ -45,8 +59,8 @@ if response == "Vous êtes connecté":
     #personnalisation de la fenêtre racine
     root.title("Interface etudiants") # Titre de la fenêtre
     root.geometry("720x480") # Taille de la fenêtre
-    root.minsize(480, 360) # Taille minimum de la fenêtre
-    root.iconbitmap("couronne.ico") # Icone de la fenêtre
+    root.minsize(880, 600) # Taille minimum de la fenêtre
+    #root.iconbitmap("couronne.ico") # Icone de la fenêtre
     root.config(background='#B6F0E6') # Couleur de fond de la fenêtre
     #Créer la frame
     frame = Frame(root, bg='#B6F0E6')
@@ -64,6 +78,12 @@ if response == "Vous êtes connecté":
     button3.pack(pady=15, fill=X) # Affichage du widget
     back_button = Button(root, text="Back", bg='#B6F0E6', command=send_leave_command)  # Création d'un widget Label (texte)
     back_button.pack(side=BOTTOM, anchor=SE)
+    # Create text widget and label
+    Label_response = Label(frame, text="Réponse du serveur", font=("Courrier", 15), bg='#B6F0E6', fg='black')  # Création d'un widget Label (texte)
+    Label_response.pack(pady=50) # Affichage du widget
+    T = Text(frame, height=2, width=30)
+    T.pack()
+    T.insert(END, "Connecté au serveur.")
     root.mainloop() # Lancement de la boucle principale
 
 
