@@ -6,7 +6,7 @@ root = Tk() # Création de la fenêtre racine
 #personnalisation de la fenêtre racine
 root.title("Interface professeur") # Titre de la fenêtre
 root.geometry("720x480") # Taille de la fenêtre
-root.minsize(480, 360) # Taille minimum de la fenêtre
+root.minsize(800, 600) # Taille minimum de la fenêtre
 root.iconbitmap("couronne.ico") # Icone de la fenêtre
 root.config(background='#B6F0E6') # Couleur de fond de la fenêtre
 
