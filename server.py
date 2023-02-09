@@ -3,6 +3,12 @@ import threading
 #import de la classe DatabaseConnection du fichier bdd.py
 from bdd import DatabaseConnection
 
+#Paramètres par défaut:
+ipBdd = "localhost"
+portBdd = 3306
+userBdd = "root"
+passwordBdd = ""
+bddName = "cmm"
 #fonction qui affiche les threads de la liste threads et les sépare par des virgules
 def print_threads():
     print("Threads actifs: ", end="")
@@ -12,8 +18,14 @@ def print_threads():
 
 #fonction check_demande qui vérifie si une demande est présente dans la table waiting_line
 def check_demand(client, sessionId):
+    global ipBdd
+    global portBdd
+    global userBdd
+    global passwordBdd
+    global bddName
+    print("[DEBUG] IP BDD: ", ipBdd, " - Port BDD: ", portBdd, " - User BDD: ", userBdd, " - Password BDD: ", passwordBdd, " - Nom BDD: ", bddName)
     # Créer une instance de la classe DatabaseConnection
-    db = DatabaseConnection("localhost", 3306, "cmm", "root", "")
+    db = DatabaseConnection(ipBdd, portBdd, bddName, userBdd, passwordBdd)
 
     # Établir la connexion à la base de données
     db.connect()
@@ -120,9 +132,30 @@ tcpsock.bind(("", 1111))
 # crée un tableau de threads
 threads = []
 
+
+#Paramétrage de la base de données:
+ipBdd = input("Entrez l'adresse IP de la base de données: (localhost par défaut) ")
+if ipBdd == "":
+    ipBdd = "localhost"
+portBdd = input("Entrez le port de la base de données: (3306 par défaut) ")
+if portBdd == "":
+    portBdd = 3306
+else:
+    portBdd = int(portBdd)
+userBdd = input("Entrez le nom d'utilisateur de la base de données: (root par défaut) ")
+if userBdd == "":
+    userBdd = "root"
+passwordBdd = input("Entrez le mot de passe de la base de données: (vide par défaut) ")
+if passwordBdd == "":
+    passwordBdd = ""
+nomBdd = input("Entrez le nom de la base de données: (cmm par défaut) ")
+if nomBdd == "":
+    nomBdd = "cmm"
+
+
 while True:
     # Créer une instance de la classe DatabaseConnection
-    db = DatabaseConnection("localhost", 3306, "cmm", "root", "")
+    db = DatabaseConnection(ipBdd, portBdd, nomBdd, userBdd, passwordBdd)
 
     # Établir la connexion à la base de données
     db.connect()

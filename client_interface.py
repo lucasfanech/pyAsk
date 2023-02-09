@@ -2,6 +2,20 @@
 import socket
 from tkinter import * # Importation de la bibliothèque Tkinter
 import runpy
+import sys
+
+ipServeur = None
+portServeur = None
+ipbdd = None
+portbdd = None
+bddSelect = None
+numTable = None
+
+if len(sys.argv) > 1:
+    ipServeur = sys.argv[1]
+    portServeur = sys.argv[2]
+    numTable = sys.argv[3]
+
 def send_ask_command():
     # Envoie la commande "/ask" au serveur en utilisant un socket
     clientsocket.send("/ask".encode())
@@ -34,19 +48,30 @@ def send_leave_command():
     # Envoie la commande "/leave" au serveur en utilisant un socket
     clientsocket.send("/leave".encode())
     root.destroy()
-    runpy.run_path('IntStart.py')
+    runpy.run_path('client_start.py')
 
 
 # Crée une connexion socket avec le seveur en localhost sur le port 1111
 clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+#Connexion au serveur
+if ipServeur and portServeur and numTable:
+    # Code à exécuter si toutes les variables sont définies
+    # Connecion au serveur
+    print("Connexion au serveur: ", ipServeur, ":", portServeur, " - Table: ", numTable)
+    try:
+        clientsocket.connect((ipServeur, int(portServeur)))
+    except:
+        print("Erreur de connexion au serveur")
+        sys.exit()
+else:
+    # Code à exécuter si au moins une variable n'est pas définie
+    print("Erreur: Une variable n'est pas définie")
+    # terminer le programme
+    exit()
 
-
-#Connecion au serveur
-clientsocket.connect(('localhost', 1111))
-
-# demande un numéro d'identification au client via la fonction input()
-r = input("Entrez votre numéro d'identification: ")
+# numéro d'identification (table)
+r = numTable
 # envoie le numéro d'identification au serveur
 clientsocket.send(r.encode())
 # affiche la réponse du serveur
@@ -91,7 +116,7 @@ if response == "Vous êtes connecté":
 # lorsque l'on ferme la fenêtre, on ferme la connexion
 clientsocket.send("/leave".encode())
 clientsocket.close()
-runpy.run_path('IntStart.py')
+runpy.run_path('client_start.py')
 
 
 
