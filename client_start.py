@@ -40,35 +40,39 @@ def enregistrer_InfoConnexion():
     portServeur = entree2.get()
     numTable = entree3.get()
     print("Info connexion : ", ipServeur, portServeur, numTable)
+    root.destroy()
+    subprocess.run(['python', 'client_interface.py', str(ipServeur), str(portServeur), str(numTable)])
 
-
+#Label pour l'adresse IP
+Label_ip = customtkinter.CTkLabel(root, text="Adresse IP du serveur", font=("Courrier", 10))  # Création d'un widget Label (texte)
+Label_ip.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER) # Affichage du widget
 entree1 = customtkinter.CTkEntry(root, show="")
-entree1.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
+entree1.place(relx=0.5, rely=0.35, anchor=tkinter.CENTER)
 
+#Label pour le port
+Label_port = customtkinter.CTkLabel(root, text="Port du serveur", font=("Courrier", 10))  # Création d'un widget Label (texte)
+Label_port.place(relx=0.5, rely=0.4, anchor=tkinter.CENTER) # Affichage du widget
 entree2 = customtkinter.CTkEntry(root, show="")
-entree2.place(relx=0.5, rely=0.4, anchor=tkinter.CENTER)
+entree2.place(relx=0.5, rely=0.45, anchor=tkinter.CENTER)
 
+#Label pour le numéro de table
+Label_table = customtkinter.CTkLabel(root, text="Numéro de table", font=("Courrier", 10))  # Création d'un widget Label (texte)
+Label_table.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER) # Affichage du widget
 entree3 = customtkinter.CTkEntry(root, show="")
-entree3.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+entree3.place(relx=0.5, rely=0.55, anchor=tkinter.CENTER)
 
 #ajouter des valeurs par défaut
 entree1.insert(0, "localhost")
 entree2.insert(0, "1111")
 entree3.insert(0, "0")
 
-
-
-
-
-bouton = customtkinter.CTkButton(root, text="Soumettre", font=("Courrier", 10), command=enregistrer_InfoConnexion)
-bouton.place(relx=0.5, rely=0.6, anchor=tkinter.CENTER)
-
-yt_button = customtkinter.CTkButton(root, text="Démarrer", font=("Courrier", 10), command=lambda : [root.destroy(),  subprocess.run(['python', 'client_interface.py', str(ipServeur), str(portServeur), str(numTable)])])
+#Bouton pour lancer le client
+yt_button = customtkinter.CTkButton(root, text="Démarrer", font=("Courrier", 10), command=enregistrer_InfoConnexion)
 yt_button.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
-
+#Bouton pour lancer l'interface admin
 admin_button = customtkinter.CTkButton(root, text="Admin", command=lambda : [root.destroy(), runpy.run_path('IntProf.py')])
-admin_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
+admin_button.place(relx=0.9, rely=0.8, anchor=tkinter.CENTER)
 
 
 root.mainloop() # Lancement de la boucle principale
