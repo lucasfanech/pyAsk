@@ -23,7 +23,6 @@ def check_demand(client, sessionId):
     global userBdd
     global passwordBdd
     global bddName
-    print("[DEBUG] IP BDD: ", ipBdd, " - Port BDD: ", portBdd, " - User BDD: ", userBdd, " - Password BDD: ", passwordBdd, " - Nom BDD: ", bddName)
     # Créer une instance de la classe DatabaseConnection
     db = DatabaseConnection(ipBdd, portBdd, bddName, userBdd, passwordBdd)
 

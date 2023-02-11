@@ -1,4 +1,5 @@
-from tkinter import * # Importation de la bibliothèque Tkinter
+import customtkinter
+import tkinter
 import runpy
 import subprocess
 
@@ -7,25 +8,27 @@ ipServeur = "localhost"
 portServeur = 1111
 numTable = 0
 
-root = Tk() # Création de la fenêtre racine
+customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
+customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
+
+root = customtkinter.CTk() # Création de la fenêtre racine
 
 #personnalisation de la fenêtre racine
 root.title("pyAsk") # Titre de la fenêtre
 root.geometry("720x480") # Taille de la fenêtre
 root.minsize(800, 600) # Taille minimum de la fenêtre
 root.iconbitmap("couronne.ico") # Icone de la fenêtre
-root.config(background='#B6F0E6') # Couleur de fond de la fenêtre
 
 #Créer la frame
-frame = Frame(root, bg='#B6F0E6')
+customtkinter.CTkFrame(root)
 
 #ajouter un premier texte
-Label_title = Label(frame, text="Bienvenue sur pyAsk", font=("Courrier", 25), bg='#B6F0E6', fg='black')  # Création d'un widget Label (texte)
-Label_title.pack() # Affichage du widget
+Label_title = customtkinter.CTkLabel(root, text="Bienvenue sur pyAsk", font=("Courrier", 25))  # Création d'un widget Label (texte)
+Label_title.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER) # Affichage du widget
 
 #ajouter un deuxième texte
-Label_subtitle = Label(frame, text="L'aide à la gestion des TP", font=("Courrier", 15), bg='#B6F0E6', fg='black')  # Création d'un widget Label (texte)
-Label_subtitle.pack(pady=20) # Affichage du widget
+Label_subtitle = customtkinter.CTkLabel(root, text="L'aide à la gestion des TP", font=("Courrier", 15))  # Création d'un widget Label (texte)
+Label_subtitle.place(relx=0.5, rely=0.2, anchor=tkinter.CENTER) # Affichage du widget
 
 
 #Soumettre l'adresse IP
@@ -39,33 +42,34 @@ def enregistrer_InfoConnexion():
     print("Info connexion : ", ipServeur, portServeur, numTable)
 
 
-entree1 = Entry(frame, text="IP serveur")
-entree1.pack(pady=2)
-entree2 = Entry(frame, text="Port serveur")
-entree2.pack(pady=2)
-entree3 = Entry(frame, text="Numéro de la table")
-entree3.pack(pady=2)
+entree1 = customtkinter.CTkEntry(root, show="")
+entree1.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
+
+entree2 = customtkinter.CTkEntry(root, show="")
+entree2.place(relx=0.5, rely=0.4, anchor=tkinter.CENTER)
+
+entree3 = customtkinter.CTkEntry(root, show="")
+entree3.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
 #ajouter des valeurs par défaut
-entree1.insert(0, ipServeur)
-entree2.insert(0, portServeur)
-entree3.insert(0, numTable)
+entree1.insert(0, "localhost")
+entree2.insert(0, "1111")
+entree3.insert(0, "0")
 
 
 
 
-bouton = Button(frame, text="Soumettre", font=("Courrier", 10), bg='#B6F0E6', fg='black', command=enregistrer_InfoConnexion)
-bouton.pack(pady=15)
 
-#Ajouter
-frame.pack(expand=YES)
+bouton = customtkinter.CTkButton(root, text="Soumettre", font=("Courrier", 10), command=enregistrer_InfoConnexion)
+bouton.place(relx=0.5, rely=0.6, anchor=tkinter.CENTER)
 
-#ajouter un bouton
-yt_button = Button(frame, text="Commencer", font=("Courrier", 15), bg='#B6F0E6', fg='black', command=lambda : [root.destroy(),  subprocess.run(['python', 'client_interface.py', str(ipServeur), str(portServeur), str(numTable)])])  # Création d'un widget Label (texte)
-yt_button.pack(pady=20, fill=X) # Affichage du widget
+yt_button = customtkinter.CTkButton(root, text="Démarrer", font=("Courrier", 10), command=lambda : [root.destroy(),  subprocess.run(['python', 'client_interface.py', str(ipServeur), str(portServeur), str(numTable)])])
+yt_button.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
-admin_button = Button(root, text="Admin", bg='#B6F0E6', command=lambda : [root.destroy(), runpy.run_path('IntProf.py')])
-admin_button.pack(side=BOTTOM, anchor=SE)
+
+admin_button = customtkinter.CTkButton(root, text="Admin", command=lambda : [root.destroy(), runpy.run_path('IntProf.py')])
+admin_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
+
 
 root.mainloop() # Lancement de la boucle principale
 
