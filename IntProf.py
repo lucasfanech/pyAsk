@@ -71,8 +71,9 @@ scrollable_frame.place(relx=0.75, rely=0.5, anchor=tkinter.CENTER)
 
 # Create Label + Button on same line inside scrollable frame
 for i in range(30):
-    customtkinter.CTkLabel(scrollable_frame, text="Label").grid(row=i, column=0)
-
+    customtkinter.CTkCheckBox(scrollable_frame, text="").grid(row=i, column=0) 
+    customtkinter.CTkLabel(scrollable_frame, text="Label {}".format(i)).grid(row=i, column=1) 
+    
 
 
 root.mainloop() # Lancement de la boucle principale
