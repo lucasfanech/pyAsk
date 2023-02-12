@@ -1,6 +1,7 @@
 # coding: utf-8
 import socket
-from tkinter import * # Importation de la bibliothèque Tkinter
+import customtkinter
+import tkinter
 import runpy
 import sys
 
@@ -16,14 +17,22 @@ if len(sys.argv) > 1:
     portServeur = sys.argv[2]
     numTable = sys.argv[3]
 
+def send_list_command():
+    # Envoie la commande "/list" au serveur en utilisant un socket
+    clientsocket.send("/list".encode())
+    # affiche la réponse du serveur
+    response = clientsocket.recv(2048).decode()
+    # Affichage dans le tableau de la liste d'attente
+
+
 def send_ask_command():
     # Envoie la commande "/ask" au serveur en utilisant un socket
     clientsocket.send("/ask".encode())
     # affiche la réponse du serveur
     response = clientsocket.recv(2048).decode()
     print("Réponse du serveur: ", response)
-    T.delete(1.0, END)
-    T.insert(END, response)
+    T.delete("0.0", "end")  # delete all text
+    T.insert("0.0", response)  # insert response
 
 
 def send_verify_command():
@@ -32,8 +41,8 @@ def send_verify_command():
     # affiche la réponse du serveur
     response = clientsocket.recv(2048).decode()
     print("Réponse du serveur: ", response)
-    T.delete(1.0, END)
-    T.insert(END, response)
+    T.delete("0.0", "end")  # delete all text
+    T.insert("0.0", response)  # insert response
 
 def send_cancel_command():
     # Envoie la commande "/cancel" au serveur en utilisant un socket
@@ -41,8 +50,8 @@ def send_cancel_command():
     # affiche la réponse du serveur
     response = clientsocket.recv(2048).decode()
     print("Réponse du serveur: ", response)
-    T.delete(1.0, END)
-    T.insert(END, response)
+    T.delete("0.0", "end")  # delete all text
+    T.insert("0.0", response)  # insert response
 
 def send_leave_command():
     # Envoie la commande "/leave" au serveur en utilisant un socket
@@ -80,35 +89,58 @@ print(response)
 # Si la réponse est "Vous êtes connecté" alors on affiche "Connexion réussie" et on attend une entrée utilisateur infinie
 if response == "Vous êtes connecté":
     print("Connexion réussie")
-    root = Tk() # Création de la fenêtre racine
-    #personnalisation de la fenêtre racine
-    root.title("Interface etudiants") # Titre de la fenêtre
-    root.geometry("720x480") # Taille de la fenêtre
-    root.minsize(880, 600) # Taille minimum de la fenêtre
-    #root.iconbitmap("couronne.ico") # Icone de la fenêtre
-    root.config(background='#B6F0E6') # Couleur de fond de la fenêtre
-    #Créer la frame
-    frame = Frame(root, bg='#B6F0E6')
-    #ajouter un premier texte
-    Label_title = Label(root, text="Bienvenue sur pyAsk", font=("Courrier", 25), bg='#B6F0E6', fg='black')  # Création d'un widget Label (texte)
-    Label_title.pack(pady=50) # Affichage du widget
-    #Ajouter
-    frame.pack(expand=YES)
-    #ajouter les boutons
-    button1 = Button(frame, width=25, text="Validation", font=("Courrier", 15), bg='#37BF39', fg='black', command=send_verify_command)  # Création d'un widget Label (texte)
-    button1.pack(pady=15, fill=X) # Affichage du widget
-    button2 = Button(frame, width=25, text="Aide", font=("Courrier", 15), bg='#F1FF00', fg='black', command=send_ask_command)  # Création d'un widget Label (texte)
-    button2.pack(pady=15, fill=X) # Affichage du widget
-    button3 = Button(frame, width=25, text="Annuler", font=("Courrier", 15), bg='#E84130', fg='black', command=send_cancel_command)  # Création d'un widget Label (texte)
-    button3.pack(pady=15, fill=X) # Affichage du widget
-    back_button = Button(root, text="Back", bg='#B6F0E6', command=send_leave_command)  # Création d'un widget Label (texte)
-    back_button.pack(side=BOTTOM, anchor=SE)
-    # Create text widget and label
-    Label_response = Label(frame, text="Réponse du serveur", font=("Courrier", 15), bg='#B6F0E6', fg='black')  # Création d'un widget Label (texte)
-    Label_response.pack(pady=50) # Affichage du widget
-    T = Text(frame, height=2, width=30)
-    T.pack()
-    T.insert(END, "Connecté au serveur.")
+
+    customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
+    customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
+
+    root = customtkinter.CTk()  # Création de la fenêtre racine
+
+    # personnalisation de la fenêtre racine
+    root.title("pyAsk")  # Titre de la fenêtre
+    root.geometry("720x480")  # Taille de la fenêtre
+    root.minsize(800, 600)  # Taille minimum de la fenêtre
+    root.iconbitmap("couronne.ico")  # Icone de la fenêtre
+
+    # Créer la frame
+    customtkinter.CTkFrame(root)
+
+    # ajouter un premier texte
+    Label_title = customtkinter.CTkLabel(root, text="Bienvenue sur pyAsk",font=("Courrier", 25))  # Création d'un widget Label (texte)
+    Label_title.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)  # Affichage du widget
+
+    # ajouter les boutons
+    button1 = customtkinter.CTkButton(root, width=100, text="Validation", font=("Courrier", 15),command=send_verify_command)  # Création d'un widget Label (texte)
+    button1.place(relx=0.3, rely=0.4, anchor=tkinter.CENTER)  # Affichage du widget
+
+    button2 = customtkinter.CTkButton(root, width=100, text="Aide", font=("Courrier", 15),command=send_ask_command)  # Création d'un widget Label (texte)
+    button2.place(relx=0.3, rely=0.5, anchor=tkinter.CENTER)  # Affichage du widget
+
+    button3 = customtkinter.CTkButton(root, width=100, text="Annuler", font=("Courrier", 15),command=send_cancel_command)  # Création d'un widget Label (texte)
+    button3.place(relx=0.3, rely=0.6, anchor=tkinter.CENTER)  # Affichage du widget
+
+    back_button = customtkinter.CTkButton(root, text="Back", font=("Courrier", 15),command=send_leave_command)
+    back_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
+
+
+    # Create textbox widget and label
+    T = customtkinter.CTkTextbox(root, height=50, width=400)
+    T.grid(row=0, column=0)
+    T.place(relx=0.5, rely=0.9, anchor=tkinter.CENTER)
+    # Add test text
+    T.insert("0.0", "Table n°" + numTable + " est connecté au serveur")
+
+
+
+    # Scrollable frame with fixed size
+    scrollable_frame = customtkinter.CTkScrollableFrame(root, width=200, height=300)
+    scrollable_frame.place(relx=0.7, rely=0.5, anchor=tkinter.CENTER)
+
+    # Create Label + Button on same line inside scrollable frame
+    for i in range(30):
+        customtkinter.CTkLabel(scrollable_frame, text="Label").grid(row=i, column=0)
+        customtkinter.CTkButton(scrollable_frame, text="Button").grid(row=i, column=1)
+
+
     root.mainloop() # Lancement de la boucle principale
 
 
