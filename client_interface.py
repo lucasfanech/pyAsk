@@ -1,5 +1,7 @@
 # coding: utf-8
 import socket
+import threading
+
 import customtkinter
 import tkinter
 import runpy
@@ -22,7 +24,34 @@ def send_list_command():
     clientsocket.send("/list".encode())
     # affiche la réponse du serveur
     response = clientsocket.recv(2048).decode()
+    print("Liste d'attente actuelle: ", response)
     # Affichage dans le tableau de la liste d'attente
+    #empty scrollable frame
+    for widget in scrollable_frame.winfo_children():
+        widget.destroy()
+
+    #Traitement de la réponse du serveur
+    waitingList = []
+    # Pour chaque entrée séparée par une virgule et accolade dans la réponse du serveur
+    i = 0
+    for entry in response.split("},"):
+        # chaque entrée est composée ainsi: {user: value_user, callType: value_callType}
+        # on récupère le mot après le mot "user: " et avant la virgule
+        user = entry.split("user: ")[1].split(",")[0]
+        # on récupère le mot après le mot "callType: " et avant "}"
+        callType = entry.split("callType: ")[1].split("}")[0]
+        # on ajoute l'entrée à la liste d'attente
+        #waitingList.append({"user": user, "callType": callType})
+        print("user: ", user, " - callType: ", callType)
+        customtkinter.CTkLabel(scrollable_frame, text="Table n° "+user+" ").grid(row=i,column=0)
+        if callType == "0":
+            customtkinter.CTkButton(scrollable_frame, text="Question").grid(row=i, column=1)
+        elif callType == "1":
+            customtkinter.CTkButton(scrollable_frame, text="Vérification").grid(row=i, column=1)
+
+        i += 1
+
+
 
 
 def send_ask_command():
@@ -33,6 +62,7 @@ def send_ask_command():
     print("Réponse du serveur: ", response)
     T.delete("0.0", "end")  # delete all text
     T.insert("0.0", response)  # insert response
+    send_list_command()
 
 
 def send_verify_command():
@@ -43,6 +73,7 @@ def send_verify_command():
     print("Réponse du serveur: ", response)
     T.delete("0.0", "end")  # delete all text
     T.insert("0.0", response)  # insert response
+    send_list_command()
 
 def send_cancel_command():
     # Envoie la commande "/cancel" au serveur en utilisant un socket
@@ -52,6 +83,7 @@ def send_cancel_command():
     print("Réponse du serveur: ", response)
     T.delete("0.0", "end")  # delete all text
     T.insert("0.0", response)  # insert response
+    send_list_command()
 
 def send_leave_command():
     # Envoie la commande "/leave" au serveur en utilisant un socket
@@ -129,16 +161,15 @@ if response == "Vous êtes connecté":
     # Add test text
     T.insert("0.0", "Table n°" + numTable + " est connecté au serveur")
 
-
-
     # Scrollable frame with fixed size
     scrollable_frame = customtkinter.CTkScrollableFrame(root, width=200, height=300)
     scrollable_frame.place(relx=0.7, rely=0.5, anchor=tkinter.CENTER)
+    # Mise à jour de la liste d'attente
+    send_list_command()
 
-    # Create Label + Button on same line inside scrollable frame
-    for i in range(30):
-        customtkinter.CTkLabel(scrollable_frame, text="Label").grid(row=i, column=0)
-        customtkinter.CTkButton(scrollable_frame, text="Button").grid(row=i, column=1)
+    #Button to refresh the frame
+    refresh_button = customtkinter.CTkButton(root, text="Refresh", font=("Courrier", 15),command=send_list_command)
+    refresh_button.place(relx=0.7, rely=0.8, anchor=tkinter.CENTER)
 
 
     root.mainloop() # Lancement de la boucle principale
@@ -149,6 +180,7 @@ if response == "Vous êtes connecté":
 clientsocket.send("/leave".encode())
 clientsocket.close()
 runpy.run_path('client_start.py')
+
 
 
 
