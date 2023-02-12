@@ -54,3 +54,9 @@ class DatabaseConnection:
         self.cursor.execute("INSERT INTO `waiting_line` (`id_waiting`, `session_id`, `user_id`, `waiting_time`, `call_type`, `processing`, `rate`, `solved_date`, `comment`) VALUES (NULL, %s, %s, CURRENT_TIMESTAMP, '1', '0', NULL, NULL, NULL)", (sessionId, userid))
         self.cnx.commit()
         return True
+
+    def show_waitingline(self, sessionId):
+        self.cursor.execute("SELECT * FROM `waiting_line` where session_id = %s and processing = 0 ORDER BY waiting_time", (sessionId,) )
+        rows = self.cursor.fetchall()
+        return rows
+

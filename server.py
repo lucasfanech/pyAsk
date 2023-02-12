@@ -16,6 +16,30 @@ def print_threads():
         print(thread, end=", ")
     print()
 
+#fonction qui affiche les clients de la liste d'attente et les sépare par des virgules
+def get_waiting_list():
+    global ipBdd
+    global portBdd
+    global userBdd
+    global passwordBdd
+    global bddName
+    # Créer une instance de la classe DatabaseConnection
+    db = DatabaseConnection(ipBdd, portBdd, bddName, userBdd, passwordBdd)
+    # Établir la connexion à la base de données
+    db.connect()
+    # Récupère la liste des clients en attente
+    waiting_list = db.show_waitingline(num_session)
+    # ferme la connexion à la base de données
+    db.disconnect()
+    # affiche la liste des clients en attente
+    liste = ""
+    print("Liste d'attente: ", end="")
+    for client in waiting_list:
+        liste += "{ user: "+str(client[2]) + ", callType: " + str(client[4]) + "}, "
+
+    return liste
+
+
 #fonction check_demande qui vérifie si une demande est présente dans la table waiting_line
 def check_demand(client, sessionId):
     global ipBdd
@@ -120,6 +144,10 @@ class ClientThread(threading.Thread):
                 # affiche la liste des threads
                 print_threads()
                 break
+            elif r.decode() == "/list":
+                print("Liste d'attente")
+                waiting_list = get_waiting_list()
+                self.clientsocket.send(waiting_list.encode())
             else:
                 self.clientsocket.send("ERREUR: Commande inconnue".encode())
 
