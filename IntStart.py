@@ -32,13 +32,13 @@ def enregistrer_InfoConnexion():
     portServeur = entree2.get()
     numTable = entree6.get()
 
-entree1 = customtkinter.CTkEntry(root, show="IP serveur")
+entree1 = customtkinter.CTkEntry(root, placeholder_text="IP serveur")
 entree1.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
 
-entree2 = customtkinter.CTkEntry(root, show="Port serveur")
+entree2 = customtkinter.CTkEntry(root, placeholder_text="Port serveur")
 entree2.place(relx=0.5, rely=0.4, anchor=tkinter.CENTER)
 
-entree6 = customtkinter.CTkEntry(root, show="Table")
+entree6 = customtkinter.CTkEntry(root, placeholder_text="Table")
 entree6.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
 bouton = customtkinter.CTkButton(root, text="Soumettre", font=("Courrier", 15), command=enregistrer_InfoConnexion)
