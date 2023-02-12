@@ -58,8 +58,12 @@ button2.place(relx=0.35, rely=0.85, anchor=tkinter.CENTER) # Affichage du widget
 
 
 
+histo_button = customtkinter.CTkButton(root, text="Historique",font=("Courrier", 15), command=lambda : [root.destroy(), runpy.run_path('IntHisto.py')])
+histo_button.place(relx=0.7, rely=0.9, anchor=tkinter.CENTER)
+
+
 back_button = customtkinter.CTkButton(root, text="Back",font=("Courrier", 15), command=lambda : [root.destroy(), runpy.run_path('IntStart.py')])
-back_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
+back_button.place(relx=0.9, rely=0.90, anchor=tkinter.CENTER)
 
 
 
