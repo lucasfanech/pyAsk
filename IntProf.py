@@ -29,7 +29,7 @@ button1.place(relx=0.1, rely=0.9, anchor=tkinter.CENTER) # Affichage du widget
 button2 = customtkinter.CTkButton(root, width=15, text="Annulation", font=("Courrier", 15), command=root.destroy)  # Création d'un widget Label (texte)
 button2.place(relx=0.21, rely=0.9, anchor=tkinter.CENTER) # Affichage du widget
 
-back_button = customtkinter.CTkButton(root, text="Back", command=lambda : [root.destroy(), runpy.run_path('IntStart.py')])
+back_button = customtkinter.CTkButton(root, text="Back", font=("Courrier", 15), command=lambda : [root.destroy(), runpy.run_path('IntStart.py')])
 back_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
 
 root.mainloop() # Lancement de la boucle principale

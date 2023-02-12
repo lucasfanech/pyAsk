@@ -1,39 +1,40 @@
-from tkinter import * # Importation de la bibliothèque Tkinter
+import customtkinter
+import tkinter
 import runpy
 
-root = Tk() # Création de la fenêtre racine
+customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
+customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
+
+root = customtkinter.CTk() # Création de la fenêtre racine
 
 #personnalisation de la fenêtre racine
-root.title("Interface etudiants") # Titre de la fenêtre
+root.title("pyAsk") # Titre de la fenêtre
 root.geometry("720x480") # Taille de la fenêtre
-root.minsize(480, 360) # Taille minimum de la fenêtre
+root.minsize(800, 600) # Taille minimum de la fenêtre
 root.iconbitmap("couronne.ico") # Icone de la fenêtre
-root.config(background='#B6F0E6') # Couleur de fond de la fenêtre
+
 
 #Créer la frame
-frame = Frame(root, bg='#B6F0E6')
+customtkinter.CTkFrame(root)
 
 #ajouter un premier texte
-Label_title = Label(root, text="Bienvenue sur pyAsk", font=("Courrier", 25), bg='#B6F0E6', fg='black')  # Création d'un widget Label (texte)
-Label_title.pack(pady=50) # Affichage du widget
+Label_title = customtkinter.CTkLabel(root, text="Bienvenue sur pyAsk", font=("Courrier", 25))  # Création d'un widget Label (texte)
+Label_title.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER) # Affichage du widget
 
-
-#Ajouter 
-frame.pack(expand=YES)
 
 #ajouter les boutons
-button1 = Button(frame, width=25, text="Validation", font=("Courrier", 15), bg='#37BF39', fg='black', command=root.destroy)  # Création d'un widget Label (texte)
-button1.pack(pady=15, fill=X) # Affichage du widget
+button1 = customtkinter.CTkButton(root, width=25, text="Validation", font=("Courrier", 15), command=root.destroy)  # Création d'un widget Label (texte)
+button1.place(relx=0.5, rely=0.4, anchor=tkinter.CENTER) # Affichage du widget
 
-button2 = Button(frame, width=25, text="Aide", font=("Courrier", 15), bg='#F1FF00', fg='black', command=root.destroy)  # Création d'un widget Label (texte)
-button2.pack(pady=15, fill=X) # Affichage du widget
+button2 = customtkinter.CTkButton(root, width=25, text="Aide", font=("Courrier", 15), command=root.destroy)  # Création d'un widget Label (texte)
+button2.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER) # Affichage du widget
 
-button3 = Button(frame, width=25, text="Annuler", font=("Courrier", 15), bg='#E84130', fg='black', command=root.destroy)  # Création d'un widget Label (texte)
-button3.pack(pady=15, fill=X) # Affichage du widget
+button3 = customtkinter.CTkButton(root, width=25, text="Annuler", font=("Courrier", 15), command=root.destroy)  # Création d'un widget Label (texte)
+button3.place(relx=0.5, rely=0.6, anchor=tkinter.CENTER) # Affichage du widget
 
 
-back_button = Button(root, text="Back", bg='#B6F0E6', command=lambda : [root.destroy(), runpy.run_path('IntStart.py')])
-back_button.pack(side=BOTTOM, anchor=SE)
+back_button = customtkinter.CTkButton(root, text="Back",font=("Courrier", 15), command=lambda : [root.destroy(), runpy.run_path('IntStart.py')])
+back_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
 
 root.mainloop() # Lancement de la boucle principale
 

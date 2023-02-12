@@ -41,10 +41,10 @@ entree2.place(relx=0.5, rely=0.4, anchor=tkinter.CENTER)
 entree6 = customtkinter.CTkEntry(root, show="Table")
 entree6.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
-bouton = customtkinter.CTkButton(root, text="Soumettre", font=("Courrier", 10), command=enregistrer_InfoConnexion)
+bouton = customtkinter.CTkButton(root, text="Soumettre", font=("Courrier", 15), command=enregistrer_InfoConnexion)
 bouton.place(relx=0.5, rely=0.6, anchor=tkinter.CENTER)
 
-admin_button = customtkinter.CTkButton(root, text="Admin", command=lambda : [root.destroy(), runpy.run_path('IntProf.py')])
+admin_button = customtkinter.CTkButton(root, text="Admin",font=("Courrier", 15), command=lambda : [root.destroy(), runpy.run_path('IntProf.py')])
 admin_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
 
 
