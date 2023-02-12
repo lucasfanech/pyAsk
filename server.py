@@ -37,6 +37,8 @@ def get_waiting_list():
     for client in waiting_list:
         liste += "{ user: "+str(client[2]) + ", callType: " + str(client[4]) + "}, "
 
+    # retirer le dernier caractère de la liste
+    liste = liste[:-2]
     return liste
 
 
