@@ -3,6 +3,12 @@ import threading
 #import de la classe DatabaseConnection du fichier bdd.py
 from bdd import DatabaseConnection
 
+#Paramètres par défaut:
+ipBdd = "localhost"
+portBdd = 3306
+userBdd = "root"
+passwordBdd = ""
+bddName = "cmm"
 #fonction qui affiche les threads de la liste threads et les sépare par des virgules
 def print_threads():
     print("Threads actifs: ", end="")
@@ -10,10 +16,39 @@ def print_threads():
         print(thread, end=", ")
     print()
 
+#fonction qui affiche les clients de la liste d'attente et les sépare par des virgules
+def get_waiting_list():
+    global ipBdd
+    global portBdd
+    global userBdd
+    global passwordBdd
+    global bddName
+    # Créer une instance de la classe DatabaseConnection
+    db = DatabaseConnection(ipBdd, portBdd, bddName, userBdd, passwordBdd)
+    # Établir la connexion à la base de données
+    db.connect()
+    # Récupère la liste des clients en attente
+    waiting_list = db.show_waitingline(num_session)
+    # ferme la connexion à la base de données
+    db.disconnect()
+    # affiche la liste des clients en attente
+    liste = ""
+    print("Liste d'attente: ", end="")
+    for client in waiting_list:
+        liste += "{ user: "+str(client[2]) + ", callType: " + str(client[4]) + "}, "
+
+    return liste
+
+
 #fonction check_demande qui vérifie si une demande est présente dans la table waiting_line
 def check_demand(client, sessionId):
+    global ipBdd
+    global portBdd
+    global userBdd
+    global passwordBdd
+    global bddName
     # Créer une instance de la classe DatabaseConnection
-    db = DatabaseConnection("localhost", 3306, "cmm", "root", "")
+    db = DatabaseConnection(ipBdd, portBdd, bddName, userBdd, passwordBdd)
 
     # Établir la connexion à la base de données
     db.connect()
@@ -109,6 +144,10 @@ class ClientThread(threading.Thread):
                 # affiche la liste des threads
                 print_threads()
                 break
+            elif r.decode() == "/list":
+                print("Liste d'attente")
+                waiting_list = get_waiting_list()
+                self.clientsocket.send(waiting_list.encode())
             else:
                 self.clientsocket.send("ERREUR: Commande inconnue".encode())
 
@@ -120,9 +159,30 @@ tcpsock.bind(("", 1111))
 # crée un tableau de threads
 threads = []
 
+
+#Paramétrage de la base de données:
+ipBdd = input("Entrez l'adresse IP de la base de données: (localhost par défaut) ")
+if ipBdd == "":
+    ipBdd = "localhost"
+portBdd = input("Entrez le port de la base de données: (3306 par défaut) ")
+if portBdd == "":
+    portBdd = 3306
+else:
+    portBdd = int(portBdd)
+userBdd = input("Entrez le nom d'utilisateur de la base de données: (root par défaut) ")
+if userBdd == "":
+    userBdd = "root"
+passwordBdd = input("Entrez le mot de passe de la base de données: (vide par défaut) ")
+if passwordBdd == "":
+    passwordBdd = ""
+nomBdd = input("Entrez le nom de la base de données: (cmm par défaut) ")
+if nomBdd == "":
+    nomBdd = "cmm"
+
+
 while True:
     # Créer une instance de la classe DatabaseConnection
-    db = DatabaseConnection("localhost", 3306, "cmm", "root", "")
+    db = DatabaseConnection(ipBdd, portBdd, nomBdd, userBdd, passwordBdd)
 
     # Établir la connexion à la base de données
     db.connect()
