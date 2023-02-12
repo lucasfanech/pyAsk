@@ -20,6 +20,9 @@ customtkinter.CTkFrame(root)
 Label_title = customtkinter.CTkLabel(root, text="Bienvenue sur pyAsk", font=("Courrier", 25))  # Création d'un widget Label (texte)
 Label_title.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER) # Affichage du widget
 
+#ajouter un deuxième texte
+Label_subtitle = customtkinter.CTkLabel(root, text="Notez et commentez", font=("Courrier", 15))  # Création d'un widget Label (texte)
+Label_subtitle.place(relx=0.3, rely=0.22, anchor=tkinter.CENTER) # Affichage du widget
 
 #Créer la frame
 customtkinter.CTkFrame(root)
@@ -42,7 +45,7 @@ check5 = customtkinter.CTkCheckBox(root, text="*****")  # Création d'un widget 
 check5.place(relx=0.1, rely=0.7, anchor=tkinter.CENTER) # Affichage du widget
 
 #ajouter une textbox user input
-entry1 = customtkinter.CTkEntry(root, width=250, height=270, font=("Courrier", 15), placeholder_text="Commentaire")  # Création d'un widget Label (texte)
+entry1 = customtkinter.CTkTextbox(root, width=250, height=270, font=("Courrier", 15),fg_color="#484f58")  # Création d'un widget Label (texte)
 entry1.place(relx=0.3, rely=0.5, anchor=tkinter.CENTER) # Affichage du widget
 
 #ajouter les boutons
@@ -69,6 +72,7 @@ scrollable_frame.place(relx=0.75, rely=0.5, anchor=tkinter.CENTER)
 # Create Label + Button on same line inside scrollable frame
 for i in range(30):
     customtkinter.CTkLabel(scrollable_frame, text="Label").grid(row=i, column=0)
-    customtkinter.CTkButton(scrollable_frame, text="Button").grid(row=i, column=1)
+
+
 
 root.mainloop() # Lancement de la boucle principale
