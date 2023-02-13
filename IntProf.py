@@ -58,8 +58,12 @@ button2.place(relx=0.35, rely=0.85, anchor=tkinter.CENTER) # Affichage du widget
 
 
 
+histo_button = customtkinter.CTkButton(root, text="Historique",font=("Courrier", 15), command=lambda : [root.destroy(), runpy.run_path('IntHisto.py')])
+histo_button.place(relx=0.7, rely=0.9, anchor=tkinter.CENTER)
+
+
 back_button = customtkinter.CTkButton(root, text="Back",font=("Courrier", 15), command=lambda : [root.destroy(), runpy.run_path('IntStart.py')])
-back_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
+back_button.place(relx=0.9, rely=0.90, anchor=tkinter.CENTER)
 
 
 
@@ -72,7 +76,7 @@ scrollable_frame.place(relx=0.75, rely=0.5, anchor=tkinter.CENTER)
 # Create Label + Button on same line inside scrollable frame
 for i in range(30):
     customtkinter.CTkCheckBox(scrollable_frame, text="").grid(row=i, column=0) 
-    customtkinter.CTkLabel(scrollable_frame, text="Label {}".format(i)).grid(row=i, column=1) 
+    customtkinter.CTkLabel(scrollable_frame, text="GroRuk".format(i)).grid(row=i, column=1) 
     
 
 
