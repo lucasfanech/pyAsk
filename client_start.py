@@ -43,6 +43,17 @@ def enregistrer_InfoConnexion():
     root.destroy()
     subprocess.run(['python', 'client_interface.py', str(ipServeur), str(portServeur), str(numTable)])
 
+def enregistrer_AdminConnexion():
+    global ipServeur
+    global portServeur
+    global numTable
+    ipServeur = entree1.get()
+    portServeur = entree2.get()
+    numTable = entree3.get()
+    print("Info connexion : ", ipServeur, portServeur, numTable)
+    root.destroy()
+    subprocess.run(['python', 'client_teacher.py', str(ipServeur), str(portServeur), str(numTable)])
+
 #Label pour l'adresse IP
 Label_ip = customtkinter.CTkLabel(root, text="Adresse IP du serveur", font=("Courrier", 12))  # Création d'un widget Label (texte)
 Label_ip.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER) # Affichage du widget
@@ -71,7 +82,7 @@ yt_button = customtkinter.CTkButton(root, text="Démarrer", font=("Courrier", 15
 yt_button.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
 #Bouton pour lancer l'interface admin
-admin_button = customtkinter.CTkButton(root, text="Admin",font=("Courrier", 15), command=lambda : [root.destroy(), runpy.run_path('IntProf.py')])
+admin_button = customtkinter.CTkButton(root, text="Admin",font=("Courrier", 15), command=enregistrer_AdminConnexion)
 admin_button.place(relx=0.9, rely=0.8, anchor=tkinter.CENTER)
 
 
