@@ -60,3 +60,7 @@ class DatabaseConnection:
         rows = self.cursor.fetchall()
         return rows
 
+    def mark(self, num_session, userid, mark, comment):
+        self.cursor.execute("UPDATE `waiting_line` SET processing = 1, rate = %s, solved_date = CURRENT_TIMESTAMP, comment = %s WHERE user_id = %s and session_id = %s and processing = 0 LIMIT 1", (mark, comment, userid, num_session))
+        self.cnx.commit()
+        return True
