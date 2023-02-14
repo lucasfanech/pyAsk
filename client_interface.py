@@ -34,22 +34,23 @@ def send_list_command():
     waitingList = []
     # Pour chaque entrée séparée par une virgule et accolade dans la réponse du serveur
     i = 0
-    for entry in response.split("},"):
-        # chaque entrée est composée ainsi: {user: value_user, callType: value_callType}
-        # on récupère le mot après le mot "user: " et avant la virgule
-        user = entry.split("user: ")[1].split(",")[0]
-        # on récupère le mot après le mot "callType: " et avant "}"
-        callType = entry.split("callType: ")[1].split("}")[0]
-        # on ajoute l'entrée à la liste d'attente
-        #waitingList.append({"user": user, "callType": callType})
-        print("user: ", user, " - callType: ", callType)
-        customtkinter.CTkLabel(scrollable_frame, text="Table n° "+user+" ").grid(row=i,column=0)
-        if callType == "0":
-            customtkinter.CTkButton(scrollable_frame, text="Question").grid(row=i, column=1)
-        elif callType == "1":
-            customtkinter.CTkButton(scrollable_frame, text="Vérification").grid(row=i, column=1)
+    if response != "{}":
+        for entry in response.split("},"):
+            # chaque entrée est composée ainsi: {user: value_user, callType: value_callType}
+            # on récupère le mot après le mot "user: " et avant la virgule
+            user = entry.split("user: ")[1].split(",")[0]
+            # on récupère le mot après le mot "callType: " et avant "}"
+            callType = entry.split("callType: ")[1].split("}")[0]
+            # on ajoute l'entrée à la liste d'attente
+            #waitingList.append({"user": user, "callType": callType})
+            print("user: ", user, " - callType: ", callType)
+            customtkinter.CTkLabel(scrollable_frame, text="Table n° "+user+" ").grid(row=i,column=0)
+            if callType == "0":
+                customtkinter.CTkButton(scrollable_frame, text="Question").grid(row=i, column=1)
+            elif callType == "1":
+                customtkinter.CTkButton(scrollable_frame, text="Vérification").grid(row=i, column=1)
 
-        i += 1
+            i += 1
 
 
 

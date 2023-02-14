@@ -1,6 +1,5 @@
 import customtkinter
 import tkinter
-import runpy
 import socket
 import runpy
 import sys
@@ -13,6 +12,7 @@ bddSelect = None
 numTable = None
 
 selectedClient = None
+selectedMark = None
 
 if len(sys.argv) > 1:
     ipServeur = sys.argv[1]
@@ -20,20 +20,76 @@ if len(sys.argv) > 1:
     numTable = sys.argv[3]
 
 #Fonctions:
+def reset_interface():
+    send_list_command()
+    global selectedClient
+    global selectedMark
+    selectedClient = None
+    selectedMark = None
+    entry1.delete("0.0", "end")
+    check1.deselect()
+    check2.deselect()
+    check3.deselect()
+    check4.deselect()
+    check5.deselect()
+
+def send_mark_command():
+    global selectedClient
+    global selectedMark
+    # get comment entry1
+    selectedComment = entry1.get("0.0", "end")
+
+    #if selectedClient is not None and selectedMark is not None:
+    if selectedClient is not None:
+        if selectedMark is not None:
+            print("Envoi de la commande /mark ", selectedClient, selectedMark, selectedComment)
+            # Envoie la commande "/mark" au serveur en utilisant un socket
+            clientsocket.send(("/mark "+selectedClient+" "+str(selectedMark)+" "+selectedComment).encode())
+            # affiche la réponse du serveur
+            response = clientsocket.recv(2048).decode()
+            print("Réponse du serveur: ", response)
+            #Reset interface
+            reset_interface()
+        else:
+            print("Erreur: Aucune note sélectionnée")
+    else:
+        print("Erreur: Aucun client sélectionné")
 
 def set_Client(i, client):
-    selectedClient = client
-    print("Client sélectionné: ", selectedClient)
-    #desactivate all buttons
-    for widget in scrollable_frame.winfo_children():
-        if isinstance(widget, customtkinter.CTkButton):
-            widget.configure(state=tkinter.DISABLED)
-    #activate selected button
-    scrollable_frame.winfo_children()[i*2+1].configure(state=tkinter.NORMAL)
+    global selectedClient
+    if (selectedClient == client):
+        selectedClient = None
+        print("Client désélectionné")
+        #activate all buttons
+        for widget in scrollable_frame.winfo_children():
+            if isinstance(widget, customtkinter.CTkButton):
+                widget.configure(state=tkinter.NORMAL)
+
+    else:
+        selectedClient = client
+        print("Client sélectionné: ", selectedClient)
+        #desactivate all buttons
+        for widget in scrollable_frame.winfo_children():
+            if isinstance(widget, customtkinter.CTkButton):
+                widget.configure(state=tkinter.DISABLED)
+        #activate selected button
+        scrollable_frame.winfo_children()[i*2+1].configure(state=tkinter.NORMAL)
+
+def set_Mark(mark):
+    global selectedMark
+    if (selectedMark == -1):
+        selectedMark = None
+    else:
+        selectedMark = mark
+    print("Note selectionnée: ", selectedMark)
+
 
 
 
 def send_list_command():
+    global selectedClient
+    selectedClient = None
+    print("Client désélectionné")
     # Envoie la commande "/list" au serveur en utilisant un socket
     clientsocket.send("/list".encode())
     # affiche la réponse du serveur
@@ -47,25 +103,26 @@ def send_list_command():
     #Traitement de la réponse du serveur
     waitingList = []
     checkboxes = []
-    # Pour chaque entrée séparée par une virgule et accolade dans la réponse du serveur
-    i = 0
-    for entry in response.split("},"):
-        # chaque entrée est composée ainsi: {user: value_user, callType: value_callType}
-        # on récupère le mot après le mot "user: " et avant la virgule
-        user = entry.split("user: ")[1].split(",")[0]
-        # on récupère le mot après le mot "callType: " et avant "}"
-        callType = entry.split("callType: ")[1].split("}")[0]
-        # on ajoute l'entrée à la liste d'attente
-        #waitingList.append({"user": user, "callType": callType})
-        print("user: ", user, " - callType: ", callType)
+    if response != "{}":
+        # Pour chaque entrée séparée par une virgule et accolade dans la réponse du serveur
+        i = 0
+        for entry in response.split("},"):
+            # chaque entrée est composée ainsi: {user: value_user, callType: value_callType}
+            # on récupère le mot après le mot "user: " et avant la virgule
+            user = entry.split("user: ")[1].split(",")[0]
+            # on récupère le mot après le mot "callType: " et avant "}"
+            callType = entry.split("callType: ")[1].split("}")[0]
+            # on ajoute l'entrée à la liste d'attente
+            #waitingList.append({"user": user, "callType": callType})
+            print("user: ", user, " - callType: ", callType)
 
-        customtkinter.CTkLabel(scrollable_frame, text="Table n° "+user+" ").grid(row=i,column=0)
-        if callType == "0":
-            customtkinter.CTkButton(scrollable_frame, text="Question", command=lambda i=i, client=user: set_Client(i, client)).grid(row=i, column=1)
-        elif callType == "1":
-            customtkinter.CTkButton(scrollable_frame, text="Vérification", command=lambda i=i, client=user: set_Client(i, client)).grid(row=i, column=1)
+            customtkinter.CTkLabel(scrollable_frame, text="Table n° "+user+" ").grid(row=i,column=0)
+            if callType == "0":
+                customtkinter.CTkButton(scrollable_frame, text="Question", command=lambda i=i, client=user: set_Client(i, client)).grid(row=i, column=1)
+            elif callType == "1":
+                customtkinter.CTkButton(scrollable_frame, text="Vérification", command=lambda i=i, client=user: set_Client(i, client)).grid(row=i, column=1)
 
-        i += 1
+            i += 1
 
 #Connect admin socket
 # Crée une connexion socket avec le seveur en localhost sur le port 1111
@@ -146,27 +203,23 @@ check4.place(relx=0.1, rely=0.6, anchor=tkinter.CENTER)  # Affichage du widget
 check5 = customtkinter.CTkCheckBox(root, text="*****")  # Création d'un widget Label (texte)
 check5.place(relx=0.1, rely=0.7, anchor=tkinter.CENTER)  # Affichage du widget
 # On click on check1-2-3-4-5 -> uncheck others
-check1.configure(command=lambda: [check2.deselect(), check3.deselect(), check4.deselect(), check5.deselect()])
-check2.configure(command=lambda: [check1.deselect(), check3.deselect(), check4.deselect(), check5.deselect()])
-check3.configure(command=lambda: [check1.deselect(), check2.deselect(), check4.deselect(), check5.deselect()])
-check4.configure(command=lambda: [check1.deselect(), check2.deselect(), check3.deselect(), check5.deselect()])
-check5.configure(command=lambda: [check1.deselect(), check2.deselect(), check3.deselect(), check4.deselect()])
+check1.configure(command=lambda: [check2.deselect(), check3.deselect(), check4.deselect(), check5.deselect(), set_Mark(1)])
+check2.configure(command=lambda: [check1.deselect(), check3.deselect(), check4.deselect(), check5.deselect(), set_Mark(2)])
+check3.configure(command=lambda: [check1.deselect(), check2.deselect(), check4.deselect(), check5.deselect(), set_Mark(3)])
+check4.configure(command=lambda: [check1.deselect(), check2.deselect(), check3.deselect(), check5.deselect(), set_Mark(4)])
+check5.configure(command=lambda: [check1.deselect(), check2.deselect(), check3.deselect(), check4.deselect(), set_Mark(5)])
 # ajouter une textbox user input
-entry1 = customtkinter.CTkTextbox(root, width=250, height=270, font=("Courrier", 15),
-                                  fg_color="#484f58")  # Création d'un widget Label (texte)
+entry1 = customtkinter.CTkTextbox(root, width=250, height=270, font=("Courrier", 15), fg_color="#484f58")  # Création d'un widget Label (texte)
 entry1.place(relx=0.3, rely=0.5, anchor=tkinter.CENTER)  # Affichage du widget
 
 # ajouter les boutons
-button1 = customtkinter.CTkButton(root, width=100, text="Validation", font=("Courrier", 15),
-                                  command=root.destroy)  # Création d'un widget Label (texte)
+button1 = customtkinter.CTkButton(root, width=100, text="Validation", font=("Courrier", 15), command=send_mark_command)  # Création d'un widget Label (texte)
 button1.place(relx=0.2, rely=0.85, anchor=tkinter.CENTER)  # Affichage du widget
 
-button2 = customtkinter.CTkButton(root, width=100, text="Annuler", font=("Courrier", 15),
-                                  command=root.destroy)  # Création d'un widget Label (texte)
+button2 = customtkinter.CTkButton(root, width=100, text="Annuler", font=("Courrier", 15), command=reset_interface)  # Création d'un widget Label (texte)
 button2.place(relx=0.35, rely=0.85, anchor=tkinter.CENTER)  # Affichage du widget
 
-back_button = customtkinter.CTkButton(root, text="Back", font=("Courrier", 15),
-                                      command=lambda: [root.destroy(), runpy.run_path('client_start.py')])
+back_button = customtkinter.CTkButton(root, text="Back", font=("Courrier", 15), command=lambda: [root.destroy(), runpy.run_path('client_start.py')])
 back_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
 
 # Scrollable frame with fixed size
