@@ -89,6 +89,7 @@ def send_cancel_command():
 def send_leave_command():
     # Envoie la commande "/leave" au serveur en utilisant un socket
     clientsocket.send("/leave".encode())
+    clientsocket.close()
     root.destroy()
     runpy.run_path('client_start.py')
 
@@ -138,9 +139,11 @@ if response == "Vous êtes connecté":
     customtkinter.CTkFrame(root)
 
     # ajouter un premier texte
-    Label_title = customtkinter.CTkLabel(root, text="Bienvenue sur pyAsk",font=("Courrier", 25))  # Création d'un widget Label (texte)
+    Label_title = customtkinter.CTkLabel(root, text="Table n°"+numTable,font=("Courrier", 25))  # Création d'un widget Label (texte)
     Label_title.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)  # Affichage du widget
-
+    # ajouter un second texte
+    Label_subtitle = customtkinter.CTkLabel(root, text="Vous pouvez choisir d'appeler l'animateur pour une question ou pour une vérification.",font=("Courrier", 15))  # Création d'un widget Label (texte)
+    Label_subtitle.place(relx=0.5, rely=0.2, anchor=tkinter.CENTER)  # Affichage du widget
     # ajouter les boutons
     button1 = customtkinter.CTkButton(root, width=100, text="Validation", font=("Courrier", 15),command=send_verify_command)  # Création d'un widget Label (texte)
     button1.place(relx=0.3, rely=0.4, anchor=tkinter.CENTER)  # Affichage du widget

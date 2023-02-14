@@ -173,22 +173,28 @@ root.iconbitmap("couronne.ico")  # Icone de la fenêtre
 customtkinter.CTkFrame(root)
 
 # ajouter un premier texte
-Label_title = customtkinter.CTkLabel(root, text="Bienvenue sur pyAsk",
-                                     font=("Courrier", 25))  # Création d'un widget Label (texte)
+Label_title = customtkinter.CTkLabel(root, text="Interface enseignant", font=("Courrier", 25))  # Création d'un widget Label (texte)
 Label_title.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)  # Affichage du widget
 
 # ajouter un deuxième texte
-Label_subtitle = customtkinter.CTkLabel(root, text="Notez et commentez",
-                                        font=("Courrier", 15))  # Création d'un widget Label (texte)
-Label_subtitle.place(relx=0.3, rely=0.22, anchor=tkinter.CENTER)  # Affichage du widget
+Label_subtitle = customtkinter.CTkLabel(root, text="Notez et commentez", font=("Courrier", 15))  # Création d'un widget Label (texte)
+Label_subtitle.place(relx=0.5, rely=0.15, anchor=tkinter.CENTER)  # Affichage du widget
+
+# ajouter un label note
+Label_note = customtkinter.CTkLabel(root, text="Note", font=("Courrier", 15))  # Création d'un widget Label (texte)
+Label_note.place(relx=0.08, rely=0.22, anchor=tkinter.CENTER)  # Affichage du widget
+
+# ajouter un label commentaire
+Label_comment = customtkinter.CTkLabel(root, text="Commentaire", font=("Courrier", 15))  # Création d'un widget Label (texte)
+Label_comment.place(relx=0.3, rely=0.22, anchor=tkinter.CENTER)  # Affichage du widget
+
+# ajouter un label élève
+Label_eleve = customtkinter.CTkLabel(root, text="Elève", font=("Courrier", 15))  # Création d'un widget Label (texte)
+Label_eleve.place(relx=0.75, rely=0.22, anchor=tkinter.CENTER)  # Affichage du widget
 
 # Créer la frame
 customtkinter.CTkFrame(root)
 
-# ajouter un premier texte
-Label_title = customtkinter.CTkLabel(root, text="Bienvenue sur pyAsk",
-                                     font=("Courrier", 25))  # Création d'un widget Label (texte)
-Label_title.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)  # Affichage du widget
 
 # ajouter des checkboxes
 
@@ -219,7 +225,7 @@ button1.place(relx=0.2, rely=0.85, anchor=tkinter.CENTER)  # Affichage du widget
 button2 = customtkinter.CTkButton(root, width=100, text="Annuler", font=("Courrier", 15), command=reset_interface)  # Création d'un widget Label (texte)
 button2.place(relx=0.35, rely=0.85, anchor=tkinter.CENTER)  # Affichage du widget
 
-back_button = customtkinter.CTkButton(root, text="Back", font=("Courrier", 15), command=lambda: [root.destroy(), runpy.run_path('client_start.py')])
+back_button = customtkinter.CTkButton(root, text="Back", font=("Courrier", 15), command=lambda: [root.destroy(),clientsocket.send("/leave".encode()),clientsocket.close(), runpy.run_path('client_start.py')])
 back_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)
 
 # Scrollable frame with fixed size
