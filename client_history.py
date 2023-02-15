@@ -121,7 +121,7 @@ send_history_command()
 
 # refresh button
 refresh_button = customtkinter.CTkButton(root, text="Refresh", font=("Courrier", 15), command=send_history_command)
-refresh_button.place(relx=0.9, rely=0.8, anchor=tkinter.CENTER)
+refresh_button.place(relx=0.9, rely=0.85, anchor=tkinter.CENTER)
 # back button
 back_button = customtkinter.CTkButton(root, text="Back", font=("Courrier", 15), command=lambda: [root.destroy(),clientsocket.send("/leave".encode()),clientsocket.close(), runpy.run_path('client_start.py')])
 back_button.place(relx=0.9, rely=0.9, anchor=tkinter.CENTER)

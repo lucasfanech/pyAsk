@@ -3,6 +3,7 @@ import tkinter
 import socket
 import runpy
 import sys
+from PIL import Image
 
 ipServeur = None
 portServeur = None
@@ -168,6 +169,25 @@ root = customtkinter.CTk()  # Création de la fenêtre racine
 root.title("pyAsk")  # Titre de la fenêtre
 root.geometry("800x600")  # Taille de la fenêtre
 root.iconbitmap("couronne.ico")  # Icone de la fenêtre
+my_image1 = customtkinter.CTkImage(light_image=Image.open("1.png"),
+                                  dark_image=Image.open("1.png"),
+                                  size=(90, 30))
+
+my_image2 = customtkinter.CTkImage(light_image=Image.open("2.png"),
+                                  dark_image=Image.open("2.png"),
+                                  size=(90, 30))
+
+my_image3 = customtkinter.CTkImage(light_image=Image.open("3.png"),
+                                  dark_image=Image.open("3.png"),
+                                  size=(90, 30))
+
+my_image4 = customtkinter.CTkImage(light_image=Image.open("4.png"),
+                                  dark_image=Image.open("4.png"),
+                                  size=(90, 30))
+
+my_image5 = customtkinter.CTkImage(light_image=Image.open("5.png"),
+                                  dark_image=Image.open("5.png"),
+                                  size=(90, 30))
 
 # Créer la frame
 customtkinter.CTkFrame(root)
@@ -186,7 +206,7 @@ Label_note.place(relx=0.08, rely=0.22, anchor=tkinter.CENTER)  # Affichage du wi
 
 # ajouter un label commentaire
 Label_comment = customtkinter.CTkLabel(root, text="Commentaire", font=("Courrier", 15))  # Création d'un widget Label (texte)
-Label_comment.place(relx=0.3, rely=0.22, anchor=tkinter.CENTER)  # Affichage du widget
+Label_comment.place(relx=0.38, rely=0.22, anchor=tkinter.CENTER)  # Affichage du widget
 
 # ajouter un label élève
 Label_eleve = customtkinter.CTkLabel(root, text="Elève", font=("Courrier", 15))  # Création d'un widget Label (texte)
@@ -200,14 +220,24 @@ customtkinter.CTkFrame(root)
 
 check1 = customtkinter.CTkCheckBox(root, text="*")  # Création d'un widget Label (texte)
 check1.place(relx=0.1, rely=0.3, anchor=tkinter.CENTER)  # Affichage du widget
+check1button = customtkinter.CTkButton(root, image=my_image1, text="", height=30, width=90, fg_color="#242424")
+check1button.place(relx=0.14, rely=0.3, anchor=tkinter.CENTER)
 check2 = customtkinter.CTkCheckBox(root, text="**")  # Création d'un widget Label (texte)
 check2.place(relx=0.1, rely=0.4, anchor=tkinter.CENTER)  # Affichage du widget
+check2button = customtkinter.CTkButton(root, image=my_image2, text="", height=30, width=90, fg_color="#242424")
+check2button.place(relx=0.14, rely=0.4, anchor=tkinter.CENTER)
 check3 = customtkinter.CTkCheckBox(root, text="***")  # Création d'un widget Label (texte)
 check3.place(relx=0.1, rely=0.5, anchor=tkinter.CENTER)  # Affichage du widget
+check3button = customtkinter.CTkButton(root, image=my_image3, text="", height=30, width=90, fg_color="#242424")
+check3button.place(relx=0.14, rely=0.5, anchor=tkinter.CENTER)
 check4 = customtkinter.CTkCheckBox(root, text="****")  # Création d'un widget Label (texte)
 check4.place(relx=0.1, rely=0.6, anchor=tkinter.CENTER)  # Affichage du widget
+check4button = customtkinter.CTkButton(root, image=my_image4, text="", height=30, width=90, fg_color="#242424")
+check4button.place(relx=0.14, rely=0.6, anchor=tkinter.CENTER)
 check5 = customtkinter.CTkCheckBox(root, text="*****")  # Création d'un widget Label (texte)
 check5.place(relx=0.1, rely=0.7, anchor=tkinter.CENTER)  # Affichage du widget
+check5button = customtkinter.CTkButton(root, image=my_image5, text="", height=30, width=90, fg_color="#242424")
+check5button.place(relx=0.14, rely=0.7, anchor=tkinter.CENTER)
 # On click on check1-2-3-4-5 -> uncheck others
 check1.configure(command=lambda: [check2.deselect(), check3.deselect(), check4.deselect(), check5.deselect(), set_Mark(1)])
 check2.configure(command=lambda: [check1.deselect(), check3.deselect(), check4.deselect(), check5.deselect(), set_Mark(2)])
@@ -216,7 +246,7 @@ check4.configure(command=lambda: [check1.deselect(), check2.deselect(), check3.d
 check5.configure(command=lambda: [check1.deselect(), check2.deselect(), check3.deselect(), check4.deselect(), set_Mark(5)])
 # ajouter une textbox user input
 entry1 = customtkinter.CTkTextbox(root, width=250, height=270, font=("Courrier", 15), fg_color="#484f58")  # Création d'un widget Label (texte)
-entry1.place(relx=0.3, rely=0.5, anchor=tkinter.CENTER)  # Affichage du widget
+entry1.place(relx=0.38, rely=0.5, anchor=tkinter.CENTER)  # Affichage du widget
 
 # ajouter les boutons
 button1 = customtkinter.CTkButton(root, width=100, text="Validation", font=("Courrier", 15), command=send_mark_command)  # Création d'un widget Label (texte)
