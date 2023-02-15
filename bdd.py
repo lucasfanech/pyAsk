@@ -60,6 +60,13 @@ class DatabaseConnection:
         rows = self.cursor.fetchall()
         return rows
 
+    def show_history(self, sessionId):
+        # SELECT id_waiting, session_id, user_id, waiting_time, call_type, processing, rate, solved_date, comment FROM `waiting_line` where session_id = 4;
+        # format de la date: 2020-12-01 15:00:00 -> 01/12/2020 15h00:00
+        self.cursor.execute("SELECT id_waiting, session_id, user_id, waiting_time, call_type, processing, rate, DATE_FORMAT(solved_date, '%d/%m/%Y %Hh%im'), comment, waiting_time FROM `waiting_line` where session_id = %s and processing = 1  AND RATE IS NOT NULL ORDER BY waiting_time", (sessionId,) )
+        rows = self.cursor.fetchall()
+        return rows
+
     def mark(self, num_session, userid, mark, comment):
         self.cursor.execute("UPDATE `waiting_line` SET processing = 1, rate = %s, solved_date = CURRENT_TIMESTAMP, comment = %s WHERE user_id = %s and session_id = %s and processing = 0 LIMIT 1", (mark, comment, userid, num_session))
         self.cnx.commit()

@@ -41,6 +41,55 @@ def get_waiting_list():
     liste = liste[:-2]
     return liste
 
+#fonction qui affiche l'historique des notations
+def get_history():
+    global ipBdd
+    global portBdd
+    global userBdd
+    global passwordBdd
+    global bddName
+    # Créer une instance de la classe DatabaseConnection
+    db = DatabaseConnection(ipBdd, portBdd, bddName, userBdd, passwordBdd)
+    # Établir la connexion à la base de données
+    db.connect()
+    # Récupère l'historique des notations
+    history = db.show_history(num_session)
+    # ferme la connexion à la base de données
+    db.disconnect()
+    # affiche l'historique des notations
+    liste = ""
+    print("Historique: ", end="")
+    for client in history:
+        #if user is empty
+        user = str(client[2])
+        if client[2] == None:
+            user = "0"
+        #if callType is empty
+        callType = str(client[4])
+        if client[4] == None:
+            callType = "0"
+        # if solved is empty
+        solved = str(client[7])
+        if client[7] == None:
+            solved = "-"
+
+        #if Mark is empty
+        mark = str(client[6])
+        if client[6] == None:
+            mark = "-"
+
+        #if comment is empty
+        comment = str(client[8])
+        if client[8] == None:
+            comment = "-"
+        if client[8] == "":
+            comment = "-"
+        liste += "{ user: "+str(client[2]) + ", callType: " + str(client[4]) + ", solved: "+solved+ ", mark: "+mark+", comment: "+comment+"}, "
+
+    # retirer le dernier caractère de la liste
+    liste = liste[:-2]
+    return liste
+
 
 #fonction check_demande qui vérifie si une demande est présente dans la table waiting_line
 def check_demand(client, sessionId):
@@ -151,6 +200,13 @@ class ClientThread(threading.Thread):
                 print("Reception: "+waiting_list)
                 if waiting_list != "":
                     self.clientsocket.send(waiting_list.encode())
+                else:
+                    self.clientsocket.send("{}".encode())
+            elif r.decode() == "/history":
+                history = get_history()
+                print("Reception: "+history)
+                if history != "":
+                    self.clientsocket.send(history.encode())
                 else:
                     self.clientsocket.send("{}".encode())
             else:

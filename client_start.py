@@ -31,6 +31,17 @@ Label_subtitle = customtkinter.CTkLabel(root, text="L'aide à la gestion des TP"
 Label_subtitle.place(relx=0.5, rely=0.2, anchor=tkinter.CENTER) # Affichage du widget
 
 
+def enregistrer_Historique():
+    global ipServeur
+    global portServeur
+    global numTable
+    ipServeur = entree1.get()
+    portServeur = entree2.get()
+    numTable = entree3.get()
+    print("Info connexion : ", ipServeur, portServeur, numTable)
+    root.destroy()
+    subprocess.run(['python', 'client_history.py', str(ipServeur), str(portServeur), str(numTable)])
+
 #Soumettre l'adresse IP
 def enregistrer_InfoConnexion():
     global ipServeur
@@ -85,6 +96,9 @@ yt_button.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 admin_button = customtkinter.CTkButton(root, text="Admin",font=("Courrier", 15), command=enregistrer_AdminConnexion)
 admin_button.place(relx=0.9, rely=0.8, anchor=tkinter.CENTER)
 
+#Bouton pour afficher l'historique
+historique_button = customtkinter.CTkButton(root, text="Historique",font=("Courrier", 15), command=enregistrer_Historique)
+historique_button.place(relx=0.9, rely=0.85, anchor=tkinter.CENTER)
 
 root.mainloop() # Lancement de la boucle principale
 
