@@ -34,22 +34,23 @@ def send_list_command():
     waitingList = []
     # Pour chaque entrée séparée par une virgule et accolade dans la réponse du serveur
     i = 0
-    for entry in response.split("},"):
-        # chaque entrée est composée ainsi: {user: value_user, callType: value_callType}
-        # on récupère le mot après le mot "user: " et avant la virgule
-        user = entry.split("user: ")[1].split(",")[0]
-        # on récupère le mot après le mot "callType: " et avant "}"
-        callType = entry.split("callType: ")[1].split("}")[0]
-        # on ajoute l'entrée à la liste d'attente
-        #waitingList.append({"user": user, "callType": callType})
-        print("user: ", user, " - callType: ", callType)
-        customtkinter.CTkLabel(scrollable_frame, text="Table n° "+user+" ").grid(row=i,column=0)
-        if callType == "0":
-            customtkinter.CTkButton(scrollable_frame, text="Question").grid(row=i, column=1)
-        elif callType == "1":
-            customtkinter.CTkButton(scrollable_frame, text="Vérification").grid(row=i, column=1)
+    if response != "{}":
+        for entry in response.split("},"):
+            # chaque entrée est composée ainsi: {user: value_user, callType: value_callType}
+            # on récupère le mot après le mot "user: " et avant la virgule
+            user = entry.split("user: ")[1].split(",")[0]
+            # on récupère le mot après le mot "callType: " et avant "}"
+            callType = entry.split("callType: ")[1].split("}")[0]
+            # on ajoute l'entrée à la liste d'attente
+            #waitingList.append({"user": user, "callType": callType})
+            print("user: ", user, " - callType: ", callType)
+            customtkinter.CTkLabel(scrollable_frame, text="Table n° "+user+" ").grid(row=i,column=0)
+            if callType == "0":
+                customtkinter.CTkButton(scrollable_frame, text="Question").grid(row=i, column=1)
+            elif callType == "1":
+                customtkinter.CTkButton(scrollable_frame, text="Vérification").grid(row=i, column=1)
 
-        i += 1
+            i += 1
 
 
 
@@ -88,6 +89,7 @@ def send_cancel_command():
 def send_leave_command():
     # Envoie la commande "/leave" au serveur en utilisant un socket
     clientsocket.send("/leave".encode())
+    clientsocket.close()
     root.destroy()
     runpy.run_path('client_start.py')
 
@@ -137,9 +139,11 @@ if response == "Vous êtes connecté":
     customtkinter.CTkFrame(root)
 
     # ajouter un premier texte
-    Label_title = customtkinter.CTkLabel(root, text="Bienvenue sur pyAsk",font=("Courrier", 25))  # Création d'un widget Label (texte)
+    Label_title = customtkinter.CTkLabel(root, text="Table n°"+numTable,font=("Courrier", 25))  # Création d'un widget Label (texte)
     Label_title.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)  # Affichage du widget
-
+    # ajouter un second texte
+    Label_subtitle = customtkinter.CTkLabel(root, text="Vous pouvez choisir d'appeler l'animateur pour une question ou pour une vérification.",font=("Courrier", 15))  # Création d'un widget Label (texte)
+    Label_subtitle.place(relx=0.5, rely=0.2, anchor=tkinter.CENTER)  # Affichage du widget
     # ajouter les boutons
     button1 = customtkinter.CTkButton(root, width=100, text="Validation", font=("Courrier", 15),command=send_verify_command)  # Création d'un widget Label (texte)
     button1.place(relx=0.3, rely=0.4, anchor=tkinter.CENTER)  # Affichage du widget

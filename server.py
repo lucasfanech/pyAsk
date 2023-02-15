@@ -147,11 +147,29 @@ class ClientThread(threading.Thread):
                 print_threads()
                 break
             elif r.decode() == "/list":
-                print("Liste d'attente")
                 waiting_list = get_waiting_list()
-                self.clientsocket.send(waiting_list.encode())
+                print("Reception: "+waiting_list)
+                if waiting_list != "":
+                    self.clientsocket.send(waiting_list.encode())
+                else:
+                    self.clientsocket.send("{}".encode())
             else:
-                self.clientsocket.send("ERREUR: Commande inconnue".encode())
+                #if r.decode() contains "/mark":
+                if r.decode().startswith("/mark"):
+                    # split the string to get args of the command: /mark <idClient> <note> <comment>
+                    args = r.decode().split(" ")
+                    if len(args) == 4:
+                        #if mark is number between 0 and 5
+                        if args[2].isdigit() and int(args[2]) >= 0 and int(args[2]) <= 5:
+                            db.mark(num_session, args[1], args[2], args[3])
+                            self.clientsocket.send("Note envoyée".encode())
+                            print("Note "+args[2]+" envoyée pour le client "+args[1]+" pour la session "+str(num_session))
+                        else:
+                            self.clientsocket.send("ERREUR: La note doit être un nombre entre 0 et 5".encode())
+                    else:
+                        self.clientsocket.send("ERREUR: arguments manquants (/mark <idClient> <note> <comment>)".encode())
+                else:
+                    self.clientsocket.send("ERREUR: Commande inconnue".encode())
 
 
 tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
