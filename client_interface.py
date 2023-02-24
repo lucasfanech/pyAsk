@@ -145,7 +145,7 @@ if response == "Vous êtes connecté":
     Label_subtitle = customtkinter.CTkLabel(root, text="Vous pouvez choisir d'appeler l'animateur pour une question ou pour une vérification.",font=("Courrier", 15))  # Création d'un widget Label (texte)
     Label_subtitle.place(relx=0.5, rely=0.2, anchor=tkinter.CENTER)  # Affichage du widget
     # ajouter les boutons
-    button1 = customtkinter.CTkButton(root, width=100, text="Validation", font=("Courrier", 15),command=send_verify_command)  # Création d'un widget Label (texte)
+    button1 = customtkinter.CTkButton(root, width=100, text="Vérification", font=("Courrier", 15),command=send_verify_command)  # Création d'un widget Label (texte)
     button1.place(relx=0.3, rely=0.4, anchor=tkinter.CENTER)  # Affichage du widget
 
     button2 = customtkinter.CTkButton(root, width=100, text="Aide", font=("Courrier", 15),command=send_ask_command)  # Création d'un widget Label (texte)
