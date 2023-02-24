@@ -109,7 +109,7 @@ root.iconbitmap("couronne.ico")  # Icone de la fenêtre
 customtkinter.CTkFrame(root)
 
 # ajouter un premier texte
-Label_title = customtkinter.CTkLabel(root, text="Bienvenue sur pyAsk",
+Label_title = customtkinter.CTkLabel(root, text="Historique de notations",
                                      font=("Courrier", 25))  # Création d'un widget Label (texte)
 Label_title.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)  # Affichage du widget
 
